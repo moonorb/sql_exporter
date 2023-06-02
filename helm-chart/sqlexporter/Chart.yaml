@@ -1,0 +1,6 @@
+apiVersion: v2
+appVersion: 0.4.5
+description: Helm Chart for sql_exporter. Source Code:https://github.com/justwatchcom/sql_exporter.
+name: sqlexporter
+type: application
+version: 1.0.0

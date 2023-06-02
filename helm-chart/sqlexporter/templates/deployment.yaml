@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sqlexporter
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sqlexporter
+  template:
+    metadata:
+      labels:
+        app: sqlexporter
+    spec:
+{{- include "securitycontext" . | indent 4}}
+      volumes:
+      - name: modified-config
+        emptyDir: {}
+      - name: config-volume
+        configMap:
+          name: {{ .Release.Name }}-configmap
+          defaultMode: 511
+      - name: {{ .Values.secretName }}
+        secret:
+          secretName: {{ .Values.secretName }}
+      initContainers:
+      - name: init-container
+        image: busybox
+        command: ["/bin/sh", "-c"]
+        args:
+        - sed "s/%connection_string%/$(cat /secrets/url | sed -e 's/[\/&]/\\&/g')/g" /config/config.yml > /modified-config/config.yml
+        volumeMounts:
+        - name: config-volume
+          mountPath: /config
+        - name: modified-config
+          mountPath: /modified-config
+        - name: {{ .Values.secretName }}
+          mountPath: /secrets
+          readOnly: true
+      containers:
+      - name: sql-exporter
+        image: {{ .Values.container.image }}:{{ .Values.container.tag }}
+        imagePullPolicy: Always
+        env:
+        - name: CONFIG
+          value: /modified-config/config.yml
+        - name: CONNECTION_STRING
+          valueFrom:
+            secretKeyRef:
+              name: db-connection-secret
+              key: url          
+        ports:
+        - name: metrics
+          containerPort: 9237
+        volumeMounts:
+        - name: modified-config
+          mountPath: /modified-config
+

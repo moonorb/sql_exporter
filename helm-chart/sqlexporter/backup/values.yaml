@@ -1,0 +1,8 @@
+image:
+  repository: justwatch/sql_exporter
+  tag: v0.4.5
+
+secretName: vertica-url-secret
+
+configmapName: sql-exporter-config
+

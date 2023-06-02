@@ -1,0 +1,45 @@
+container:
+  image: justwatch/sql_exporter
+  tag: v0.4.5
+
+initContainer:
+  image: busybox
+  tag: latest
+
+secretName: db-connection-secret
+
+configmapName: sql-exporter-config
+
+securityContext:
+  runAsNonRoot: true
+  runAsUser: 1000
+  fsGroup: 1000
+
+sqlexporterjobs: |
+  jobs:
+  - name: "vertica1"
+    interval: '1m'
+    connections:
+    - %connection_string%
+    queries:
+    - name: "vertica_connections_per_node_k8s"
+      labels:
+        - node_name
+      values:
+        - totalconnss
+      query: |
+        SELECT node_name , count(*) as totalconnss
+        FROM v_monitor.sessions
+        GROUP BY node_name
+        ORDER BY node_name;
+ 
+  - name: "vertica2"
+    interval: '2m'
+    connections:
+    - %connection_string%
+    queries:
+    - name: "node_count"
+      values:
+        - node_count
+      query: |
+        select count(*) as node_count from v_catalog.nodes;

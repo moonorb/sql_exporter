@@ -1,0 +1,36 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}
+data:
+  config.yml: |
+    ---
+    jobs:
+    - name: "vertica1"
+      interval: '1m'
+      connections:
+      - %connection_string%
+      queries:
+      - name: "vertica_connections_per_node_k8s"
+        help: 'vertica_connections_per_node_help'
+        labels:
+          - node_name
+        values:
+          - totalconnss
+        query: |
+          SELECT node_name , count(*) as totalconnss 
+          FROM v_monitor.sessions 
+          GROUP BY node_name
+          ORDER BY node_name;
+
+    - name: "vertica2"
+      interval: '5m'
+      connections:
+      - %connection_string%
+      queries:    
+      - name: "total_rows_in_exampletable"
+        values:
+           - total_rows  
+        query: |
+          SELECT count(*) as total_rows from example_table;

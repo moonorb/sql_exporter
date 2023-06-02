@@ -1,0 +1,11 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: sqlexporter
+spec:
+  endpoints:
+  - interval: 5s
+    port: sqlexporter
+  selector:
+    matchLabels:
+      app: sqlexporter-app
