@@ -9,21 +9,18 @@ There is no out of the box solution to monitor a Vertica Cluster via Prometheus 
 ## Prerequisites
 You must have a running VerticaDB to test this.
 
-## Deploy
+## Deploy SQL Exporter
 The original code keeps DB credentials in plain text. Helm Chart keeps the complete connection string as a secret so the database credentials are not exposed.
 
 
-First create a namespace and the secret
+create a namespace and the secret before deploying the chart
 ```
 kubectl create ns exporter
 kubectl create secret generic db-connection-secret --from-literal=url='vertica://<DBUSER>:<DBPASS>@<DB_FQDN>:5433/<DATABASE>counters?queryArgs' -n exporter
-```
-Deploy Helm Chart
-```
 cd helm-chart
 helm install mychart sqlexporter -n exporter
 ```
-Validate Pod logs to see if you Pod has succesfully connected to Vertica DB outside the Kubernetes cluster
+Validate Pod logs to see if you Pod has succesfully connected to Vertica DB outside the Kubernetes cluster.
 
 ```
 [blah@jumphost helm-chart]$ k logs pod/sqlexporter-559946bc5f-95fxt -n exporter --tail=5
