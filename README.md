@@ -6,6 +6,7 @@ There is no modification in source code. This repo includes Helm Charts so it ca
 ## What Problem Are We Trying to Solve?
 There is no out of the box solution to monitor a Vertica Cluster via Prometheus which works with Kubernetes. This exporter enables us to run custom SQL queries and export the results in Prometheus time series database.
 
+![Alt text](https://github.com/moonorb/sql_exporter/blob/main/images/SQL_Exporter.PNG)
 
 ## Prerequisites
 You must have a running VerticaDB to test this.
