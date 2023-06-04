@@ -39,3 +39,6 @@ Depending on what you want to monitor on your Vertica DB, jobs with different in
 
 If you check your Prometheus you should see the service monitor and counters
 
+If all goes well you should see the servicemonitor and vertica metrics on your Prometheus. 
+
+![Alt text](https://github.com/moonorb/sql_exporter/blob/master/images/node_count.PNG)
